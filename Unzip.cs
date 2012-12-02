@@ -156,7 +156,13 @@ namespace Internals
 		/// <param name="outputStream">The output stream.</param>
 		public void Extract(string fileName, Stream outputStream)
 		{
-			var entry = Entries.Where(e => e.Name == fileName).First();
+			fileName = fileName.Replace("\\", "/").Trim().TrimStart('/');
+			var entry = Entries.Where(e => e.Name == fileName).FirstOrDefault();
+			if (entry == null)
+			{
+				throw new FileNotFoundException("File not found in the archive: " + fileName);
+			}
+
 			Extract(entry, outputStream);
 		}
 
