@@ -3,13 +3,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text;
 
 namespace Internals
 {
+	/// <summary>
+	/// Unzip helper class.
+	/// </summary>
 	public class Unzip : IDisposable
 	{
 		private const int EntrySignature = 0x02014B50;
@@ -19,6 +22,32 @@ namespace Internals
 		private const int DirectorySignature = 0x06054B50;
 
 		private const int BufferSize = 16 * 1024;
+
+		/// <summary>
+		/// Zip archive entry.
+		/// </summary>
+		public class Entry
+		{
+			public string Name { get; set; }
+
+			public string Comment { get; set; }
+
+			public int Crc32 { get; set; }
+
+			public int CompressedSize { get; set; }
+
+			public int OriginalSize { get; set; }
+
+			public int HeaderOffset { get; set; }
+
+			public int DataOffset { get; set; }
+
+			public bool Deflated { get; set; }
+
+			public bool IsDirectory { get { return Name.EndsWith("/"); } }
+
+			public bool IsFile { get { return !IsDirectory; } }
+		}
 
 		public Unzip(string fileName)
 			: this(File.OpenRead(fileName))
@@ -50,33 +79,49 @@ namespace Internals
 			}
 		}
 
-		public void Decompress(string fileName, Stream outputStream)
+		public void ExtractToDirectory(string directoryName)
 		{
-			var entry = Entries.Where(e => e.FileName == fileName).First();
-			Decompress(entry, outputStream);
+			foreach (var entry in Entries.Where(e => !e.IsDirectory))
+			{
+				// create target directory with file folder
+				var fileName = Path.Combine(directoryName, entry.Name);
+				var dirName = Path.GetDirectoryName(fileName);
+				Directory.CreateDirectory(dirName);
+
+				// save file
+				using (var outStream = File.Create(fileName))
+				{
+					Extract(entry.Name, outStream);
+				}
+			}
 		}
 
-		public void Decompress(ZipEntry entry, Stream outputStream)
+		public void Extract(string fileName, Stream outputStream)
+		{
+			var entry = Entries.Where(e => e.Name == fileName).First();
+			Extract(entry, outputStream);
+		}
+
+		public void Extract(Entry entry, Stream outputStream)
 		{
 			// check file signature
-			Stream.Seek(entry.FileHeaderOffset, SeekOrigin.Begin);
+			Stream.Seek(entry.HeaderOffset, SeekOrigin.Begin);
 			if (Reader.ReadInt32() != FileSignature)
 			{
 				throw new InvalidOperationException("File signature don't match.");
 			}
 
 			// move to file data
-			Stream.Seek(entry.FileDataOffset, SeekOrigin.Begin);
+			Stream.Seek(entry.DataOffset, SeekOrigin.Begin);
 			var inputStream = Stream;
 			if (entry.Deflated)
 			{
-				Console.WriteLine("entry: {0} is deflated.", entry.FileName);
 				inputStream = new DeflateStream(Stream, CompressionMode.Decompress, true);
 			}
 
 			// allocate buffer
-			var count = entry.FileSize;
-			var bufferSize = Math.Min(BufferSize, entry.FileSize);
+			var count = entry.OriginalSize;
+			var bufferSize = Math.Min(BufferSize, entry.OriginalSize);
 			var buffer = new byte[bufferSize];
 
 			while (count > 0)
@@ -98,13 +143,13 @@ namespace Internals
 		{
 			get
 			{
-				return Entries.Select(e => e.FileName).Where(f => !f.EndsWith("/"));
+				return Entries.Select(e => e.Name).Where(f => !f.EndsWith("/"));
 			}
 		}
 
-		private ZipEntry[] entries;
+		private Entry[] entries;
 
-		public IEnumerable<ZipEntry> Entries
+		public IEnumerable<Entry> Entries
 		{
 			get
 			{
@@ -117,7 +162,7 @@ namespace Internals
 			}
 		}
 
-		private IEnumerable<ZipEntry> ReadZipEntries()
+		private IEnumerable<Entry> ReadZipEntries()
 		{
 			if (Stream.Length < 22)
 			{
@@ -174,15 +219,15 @@ namespace Internals
 
 				// decode zip file entry
 				var encoder = utf8 ? Encoding.UTF8 : Encoding.Default;
-				yield return new ZipEntry
+				yield return new Entry
 				{
-					FileName = encoder.GetString(fileNameBytes),
-					FileComment = encoder.GetString(fileCommentBytes),
+					Name = encoder.GetString(fileNameBytes),
+					Comment = encoder.GetString(fileCommentBytes),
 					Crc32 = crc32,
 					CompressedSize = compressedSize,
-					FileSize = fileSize,
-					FileHeaderOffset = fileHeaderOffset,
-					FileDataOffset = fileDataOffset,
+					OriginalSize = fileSize,
+					HeaderOffset = fileHeaderOffset,
+					DataOffset = fileDataOffset,
 					Deflated = method == 8
 				};
 			}
@@ -199,26 +244,5 @@ namespace Internals
 			Stream.Seek(position, SeekOrigin.Begin);
 			return fileOffset;
 		}
-	}
-
-	public class ZipEntry
-	{
-		public string FileName { get; set; }
-
-		public string FileComment { get; set; }
-
-		public int Crc32 { get; set; }
-
-		public int CompressedSize { get; set; }
-
-		public int FileSize { get; set; }
-
-		public int FileHeaderOffset { get; set; }
-
-		public int FileDataOffset { get; set; }
-
-		public bool Deflated { get; set; }
-
-		public bool IsDirectory { get { return FileName.EndsWith("/"); } }
 	}
 }
