@@ -8,8 +8,8 @@ Description
 This is a tiny (~300 lines with comments) self-contained Unzip helper class for .NET Framework v3.5
 Client Profile or Mono 2.10. To use it, simply copy the file and add it to your project. 
 
-* For .NET Framework v4.5 projects, use built-in System.IO.Compression.ZipArchive instead.
-* For Silverlight and Windows Phone projects, use SharpGIS.UnZipper Nuget package. 
+* For .NET Framework v4.5 projects, use built-in [System.IO.Compression.ZipArchive](http://msdn.microsoft.com/en-us/library/system.io.compression.ziparchive.aspx) instead.
+* For Silverlight and Windows Phone projects, use [SharpGIS.UnZipper](http://nuget.org/packages/SharpGIS.UnZipper) Nuget package. 
 
 Usage
 -----
@@ -27,7 +27,7 @@ using (var unzip = new Unzip("zyan-sources.zip"))
 	unzip.Extract(@"source\Zyan.Communication\ZyanConnection.cs", "test.cs");
 
 	// extract file to a stream
-	unzip.Extract(@"\source\Zyan.Communication\ZyanProxy.cs", stream);
+	unzip.Extract(@"source\Zyan.Communication\ZyanProxy.cs", stream);
 
 	// extract all files from zip archive to a directory
 	unzip.ExtractToDirectory(outputDirectory);
