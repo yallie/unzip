@@ -16,26 +16,31 @@ namespace Internals
 				return;
 			}
 
-			Extract(args.First(), args.Last());
-		}
+			var archiveName = args.First();
+			var outputDirectory = args.Last();
 
-		private static void Extract(string archiveName, string targetDirectory)
-		{
 			using (var unzip = new Unzip(archiveName))
 			{
-				foreach (var entry in unzip.Entries.OrderBy(e => e.Name))
+				ListFiles(unzip);
+
+				unzip.ExtractToDirectory(outputDirectory);
+			}
+		}
+
+		private static void ListFiles(Unzip unzip)
+		{
+			var tab = unzip.Entries.Where(e => e.IsDirectory).Any() ? "\t" : string.Empty;
+
+			foreach (var entry in unzip.Entries.OrderBy(e => e.Name))
+			{
+				if (entry.IsFile)
 				{
-					if (entry.IsFile)
-					{
-						Console.WriteLine("{0}: {1} -> {2}", entry.Name, entry.OriginalSize, entry.CompressedSize);
-					}
-					else
-					{
-						Console.WriteLine("{0}: **directory**", entry.Name);
-					}
+					Console.WriteLine(tab + "{0}: {1} -> {2}", entry.Name, entry.CompressedSize, entry.OriginalSize);
+					continue;
 				}
 
-				unzip.ExtractToDirectory(targetDirectory);
+				// directory
+				Console.WriteLine(entry.Name);
 			}
 		}
 	}

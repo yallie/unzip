@@ -132,17 +132,27 @@ namespace Internals
 				Directory.CreateDirectory(dirName);
 
 				// save file
-				using (var outStream = File.Create(fileName))
-				{
-					Extract(entry.Name, outStream);
-				}
+				Extract(entry.Name, fileName);
 			}
 		}
 
 		/// <summary>
-		/// Extracts the specified file name.
+		/// Extracts the specified file to the specified name.
 		/// </summary>
-		/// <param name="fileName">Name of the file.</param>
+		/// <param name="fileName">Name of the file in zip archive.</param>
+		/// <param name="outputFileName">Name of the output file.</param>
+		public void Extract(string fileName, string outputFileName)
+		{
+			using (var outStream = File.Create(outputFileName))
+			{
+				Extract(fileName, outStream);
+			}
+		}
+
+		/// <summary>
+		/// Extracts the specified file to the output <see cref="Stream"/>.
+		/// </summary>
+		/// <param name="fileName">Name of the file in zip archive.</param>
 		/// <param name="outputStream">The output stream.</param>
 		public void Extract(string fileName, Stream outputStream)
 		{
@@ -200,7 +210,7 @@ namespace Internals
 		{
 			get
 			{
-				return Entries.Select(e => e.Name).Where(f => !f.EndsWith("/"));
+				return Entries.Select(e => e.Name).Where(f => !f.EndsWith("/")).OrderBy(f => f);
 			}
 		}
 
