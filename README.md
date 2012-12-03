@@ -8,8 +8,19 @@ Description
 This is a tiny (~300 lines with comments) self-contained Unzip helper class for .NET Framework v3.5
 Client Profile or Mono 2.10. To use it, simply copy the file and add it to your project. 
 
-* For .NET Framework v4.5 projects, use built-in [System.IO.Compression.ZipArchive](http://msdn.microsoft.com/en-us/library/system.io.compression.ziparchive.aspx) instead.
-* For Silverlight and Windows Phone projects, use [SharpGIS.UnZipper](http://nuget.org/packages/SharpGIS.UnZipper) Nuget package. 
+Alternatives
+------------
+
+* [System.IO.Compression.ZipArchive](http://msdn.microsoft.com/en-us/library/system.io.compression.ziparchive.aspx) for .NET Framework v4.5 projects.
+* [SharpGIS.UnZipper](http://nuget.org/packages/SharpGIS.UnZipper) Nuget package for Silverlight and Windows Phone projects. MS-PL. ~8k. 
+* [ZipStorer](http://zipstorer.codeplex.com/) library for zip compression and decompression. MS-PL. ~33k.
+
+Full-featured libraries
+-----------------------
+
+* [SharpZipLib](http://www.icsharpcode.net/opensource/sharpziplib/) supports Zip, GZip, Tar and BZip2 archives. GPL. ~200k.
+* [DotNetZip](http://dotnetzip.codeplex.com/) supports Silverlight and Compact framework, AES encryption. MS-PL. ~250-480k.
+* [SharpCompress](http://sharpcompress.codeplex.com/) supports Zip, Gzip, Tar, Rar and 7z. MS-PL. ~440K.
 
 Usage
 -----
