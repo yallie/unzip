@@ -65,6 +65,11 @@ namespace Internals
 			public bool IsDirectory { get { return Name.EndsWith("/"); } }
 
 			/// <summary>
+			/// Gets or sets the timestamp.
+			/// </summary>
+			public DateTime Timestamp { get; set; }
+
+			/// <summary>
 			/// Gets a value indicating whether this <see cref="Entry" /> is a file.
 			/// </summary>
 			public bool IsFile { get { return !IsDirectory; } }
@@ -143,10 +148,27 @@ namespace Internals
 		/// <param name="outputFileName">Name of the output file.</param>
 		public void Extract(string fileName, string outputFileName)
 		{
+			var entry = GetEntry(fileName);
+
 			using (var outStream = File.Create(outputFileName))
 			{
-				Extract(fileName, outStream);
+				Extract(entry, outStream);
 			}
+
+			File.SetLastWriteTime(outputFileName, entry.Timestamp);
+		}
+
+		private Entry GetEntry(string fileName)
+		{
+			fileName = fileName.Replace("\\", "/").Trim().TrimStart('/');
+			var entry = Entries.Where(e => e.Name == fileName).FirstOrDefault();
+
+			if (entry == null)
+			{
+				throw new FileNotFoundException("File not found in the archive: " + fileName);
+			}
+
+			return entry;
 		}
 
 		/// <summary>
@@ -156,14 +178,7 @@ namespace Internals
 		/// <param name="outputStream">The output stream.</param>
 		public void Extract(string fileName, Stream outputStream)
 		{
-			fileName = fileName.Replace("\\", "/").Trim().TrimStart('/');
-			var entry = Entries.Where(e => e.Name == fileName).FirstOrDefault();
-			if (entry == null)
-			{
-				throw new FileNotFoundException("File not found in the archive: " + fileName);
-			}
-
-			Extract(entry, outputStream);
+			Extract(GetEntry(fileName), outputStream);
 		}
 
 		/// <summary>
@@ -304,7 +319,8 @@ namespace Internals
 					OriginalSize = fileSize,
 					HeaderOffset = fileHeaderOffset,
 					DataOffset = fileDataOffset,
-					Deflated = method == 8
+					Deflated = method == 8,
+					Timestamp = ConvertToDateTime(timestamp)
 				};
 			}
 		}
@@ -319,6 +335,17 @@ namespace Internals
 			var fileOffset = (int)Stream.Position + fileNameSize + extraSize;
 			Stream.Seek(position, SeekOrigin.Begin);
 			return fileOffset;
+		}
+
+		/// <summary>
+		/// Converts DOS timestamp to a <see cref="DateTime"/> instance.
+		/// </summary>
+		/// <param name="dosTimestamp">The dos timestamp.</param>
+		/// <returns>The <see cref="DateTime"/> instance.</returns>
+		public static DateTime ConvertToDateTime(int dosTimestamp)
+		{
+			return new DateTime((dosTimestamp >> 25) + 1980, (dosTimestamp >> 21) & 15, (dosTimestamp >> 16) & 31,
+				(dosTimestamp >> 11) & 31, (dosTimestamp >> 5) & 63, (dosTimestamp & 31) * 2);
 		}
 	}
 }
