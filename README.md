@@ -6,7 +6,7 @@ Description
 -----------
 
 This is a tiny (~300 lines with comments) self-contained Unzip helper class for .NET Framework v3.5
-Client Profile or Mono 2.10. To use it, simply copy the file and add it to your project. 
+Client Profile or Mono 2.10. To use it, simply include Unzip.cs into your C# project. 
 
 Alternatives
 ------------
