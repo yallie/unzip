@@ -1,5 +1,6 @@
 // Unzip class for .NET 3.5 Client Profile or Mono 2.10
 // Written by Alexey Yakovlev <yallie@yandex.ru>
+// https://github.com/yallie/unzip
 
 using System;
 using System.Collections.Generic;

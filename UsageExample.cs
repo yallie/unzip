@@ -1,5 +1,6 @@
 ﻿// Unzip class usage example
 // Written by Alexey Yakovlev <yallie@yandex.ru>
+// https://github.com/yallie/unzip
 
 using System;
 using System.Linq;

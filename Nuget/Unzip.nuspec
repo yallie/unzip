@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Unzip</id>
+    <version>0.1</version>
+    <authors>yallie</authors>
+    <owners>yallie</owners>
+    <licenseUrl>https://github.com/yallie/unzip/raw/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/yallie/unzip</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Tiny unzip helper class for .NET 3.5 Client Profile and Mono 2.10, written in pure C#. This package is source-code only.</description>
+    <copyright>Copyright 2012 Alexey Yakovlev</copyright>
+    <tags>unzip decompression zip archive C#</tags>
+  </metadata>
+</package>
