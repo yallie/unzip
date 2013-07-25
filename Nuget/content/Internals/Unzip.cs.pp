@@ -130,15 +130,18 @@ namespace $rootnamespace$.Internals
 		/// <param name="directoryName">Name of the directory.</param>
 		public void ExtractToDirectory(string directoryName)
 		{
-			foreach (var entry in Entries.Where(e => !e.IsDirectory))
+			foreach (var entry in Entries)
 			{
 				// create target directory for the file
 				var fileName = Path.Combine(directoryName, entry.Name);
 				var dirName = Path.GetDirectoryName(fileName);
 				Directory.CreateDirectory(dirName);
 
-				// save file
-				Extract(entry.Name, fileName);
+				// save file if it is not only a directory
+				if (!entry.IsDirectory)
+				{
+					Extract(entry.Name, fileName);
+				}
 			}
 		}
 

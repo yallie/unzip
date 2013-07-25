@@ -2,15 +2,15 @@
 <package >
   <metadata>
     <id>Unzip</id>
-    <version>0.2</version>
+    <version>0.3</version>
     <authors>yallie</authors>
     <owners>yallie</owners>
     <licenseUrl>https://github.com/yallie/unzip/raw/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/yallie/unzip</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Tiny unzip helper class for .NET 3.5 Client Profile and Mono 2.10. This package is source-code only, it copies single Unzip.cs file to the Internals folder of your project.</description>
-    <releaseNotes>Namespace of Unzip class is changed to YourRootNamespace.Internals.</releaseNotes>
+    <releaseNotes>Fixed extraction of empty directories (contributed by pysco68).</releaseNotes>
     <copyright>Copyright 2012 Alexey Yakovlev</copyright>
-    <tags>unzip decompression zip archive C#</tags>
+    <tags>unzip decompression zip archive C# source</tags>
   </metadata>
 </package>
