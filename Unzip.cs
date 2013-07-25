@@ -138,7 +138,10 @@ namespace Internals
 				Directory.CreateDirectory(dirName);
 
 				// save file if it is not only a directory
-                if(!entry.IsDirectory) Extract(entry.Name, fileName);
+				if (!entry.IsDirectory)
+				{
+					Extract(entry.Name, fileName);
+				}
 			}
 		}
 
