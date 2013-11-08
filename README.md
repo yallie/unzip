@@ -47,3 +47,10 @@ Full-featured libraries
 * [SharpZipLib](http://www.icsharpcode.net/opensource/sharpziplib/) supports Zip, GZip, Tar and BZip2 archives. GPL. ~200k.
 * [DotNetZip](http://dotnetzip.codeplex.com/) supports Silverlight and Compact framework, AES encryption. MS-PL. ~250-480k.
 * [SharpCompress](http://sharpcompress.codeplex.com/) supports Zip, Gzip, Tar, Rar and 7z. MS-PL. ~440K.
+
+Thanks
+------
+
+* Yannic Staudt @pysco68 for contributing a bugfix
+* Per Lundberg @perlun for feature requests
+* Damien Guard @damieng for CRC32 computation algorithm
