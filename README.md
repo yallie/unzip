@@ -51,6 +51,6 @@ Full-featured libraries
 Thanks
 ------
 
-* Yannic Staudt @pysco68 for contributing a bugfix
-* Per Lundberg @perlun for feature requests
-* Damien Guard @damieng for CRC32 computation algorithm
+* [Yannic Staudt](https://github.com/pysco68) for contributing a bugfix
+* [Per Lundberg](https://github.com/perlun) for feature requests
+* [Damien Guard](https://github.com/damieng) for CRC32 computation algorithm
