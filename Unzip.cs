@@ -17,14 +17,6 @@ namespace Internals
 	/// </summary>
 	internal class Unzip : IDisposable
 	{
-		private const int EntrySignature = 0x02014B50;
-
-		private const int FileSignature = 0x04034b50;
-
-		private const int DirectorySignature = 0x06054B50;
-
-		private const int BufferSize = 16 * 1024;
-
 		/// <summary>
 		/// Zip archive entry.
 		/// </summary>
@@ -81,6 +73,14 @@ namespace Internals
 			[EditorBrowsable(EditorBrowsableState.Never)]
 			public int DataOffset { get; set; }
 		}
+		
+		private const int EntrySignature = 0x02014B50;
+
+		private const int FileSignature = 0x04034b50;
+
+		private const int DirectorySignature = 0x06054B50;
+
+		private const int BufferSize = 16 * 1024;
 
 		private static readonly uint[] Crc32Table =
 		{
