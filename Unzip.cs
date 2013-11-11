@@ -75,11 +75,8 @@ namespace Internals
 		}
 		
 		private const int EntrySignature = 0x02014B50;
-
 		private const int FileSignature = 0x04034b50;
-
 		private const int DirectorySignature = 0x06054B50;
-
 		private const int BufferSize = 16 * 1024;
 
 		private static readonly uint[] Crc32Table =
