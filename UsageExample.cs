@@ -38,10 +38,10 @@ namespace Internals
 				{
 					Console.WriteLine(tab + "{0}: {1} -> {2}", entry.Name, entry.CompressedSize, entry.OriginalSize);
 				}
-                else if (entry.IsDirectory)
-                {
-                    Console.WriteLine(entry.Name);
-                }
+				else if (entry.IsDirectory)
+				{
+					Console.WriteLine(entry.Name);
+				}
 			}
 		}
 	}
