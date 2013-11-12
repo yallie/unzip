@@ -143,6 +143,8 @@ namespace Internals
 		private const int DirectorySignature = 0x06054B50;
 		private const int BufferSize = 16 * 1024;
 
+		public event Action<int, int> ExtractProgress;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Unzip" /> class.
 		/// </summary>
@@ -191,8 +193,10 @@ namespace Internals
 		/// <param name="directoryName">Name of the directory.</param>
 		public void ExtractToDirectory(string directoryName)
 		{
-			foreach (var entry in Entries)
+			for (int index = 0; index < Entries.Length; index++)
 			{
+				var entry = Entries[index];
+
 				// create target directory for the file
 				var fileName = Path.Combine(directoryName, entry.Name);
 				var dirName = Path.GetDirectoryName(fileName);
@@ -202,6 +206,11 @@ namespace Internals
 				if (!entry.IsDirectory)
 				{
 					Extract(entry.Name, fileName);
+				}
+				
+				if (ExtractProgress != null)
+				{
+					ExtractProgress(index + 1, Entries.Length);
 				}
 			}
 		}
@@ -234,7 +243,7 @@ namespace Internals
 		private Entry GetEntry(string fileName)
 		{
 			fileName = fileName.Replace("\\", "/").Trim().TrimStart('/');
-			var entry = Entries.Where(e => e.Name == fileName).FirstOrDefault();
+			var entry = Entries.FirstOrDefault(e => e.Name == fileName);
 
 			if (entry == null)
 			{
@@ -324,7 +333,7 @@ namespace Internals
 		/// <summary>
 		/// Gets zip file entries.
 		/// </summary>
-		public IEnumerable<Entry> Entries
+		public Entry[] Entries
 		{
 			get
 			{
