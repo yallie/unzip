@@ -52,5 +52,5 @@ Thanks
 ------
 
 * [Yannic Staudt](https://github.com/pysco68) for contributing a bugfix
-* [Per Lundberg](https://github.com/perlun) for feature requests
+* [Per Lundberg](https://github.com/perlun) for several contributions
 * [Damien Guard](https://github.com/damieng) for CRC32 computation algorithm
