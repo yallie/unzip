@@ -74,6 +74,9 @@ namespace Internals
 			public int DataOffset { get; set; }
 		}
 
+		/// <summary>
+		/// CRC32 calculation helper.
+		/// </summary>
 		public class Crc32Calculator
 		{
 			private static readonly uint[] Crc32Table =
@@ -125,12 +128,50 @@ namespace Internals
 			}
 		}
 
+		/// <summary>
+		/// Provides data for the ExtractProgress event.
+		/// </summary>
+		public class FileProgressEventArgs : ProgressChangedEventArgs
+		{
+			/// <summary>
+			/// Initializes a new instance of the <see cref="FileProgressEventArgs"/> class.
+			/// </summary>
+			/// <param name="currentFile">The current file.</param>
+			/// <param name="totalFiles">The total files.</param>
+			/// <param name="fileName">Name of the file.</param>
+			public FileProgressEventArgs(int currentFile, int totalFiles, string fileName)
+				: base(totalFiles != 0 ? currentFile * 100 / totalFiles : 100, fileName)
+			{
+				CurrentFile = currentFile;
+				TotalFiles = totalFiles;
+				FileName = fileName;
+			}
+
+			/// <summary>
+			/// Gets the current file.
+			/// </summary>
+			public int CurrentFile { get; private set; }
+
+			/// <summary>
+			/// Gets the total files.
+			/// </summary>
+			public int TotalFiles { get; private set; }
+
+			/// <summary>
+			/// Gets the name of the file.
+			/// </summary>
+			public string FileName { get; private set; }
+		}
+
 		private const int EntrySignature = 0x02014B50;
 		private const int FileSignature = 0x04034b50;
 		private const int DirectorySignature = 0x06054B50;
 		private const int BufferSize = 16 * 1024;
 
-		public event Action<int, int> ExtractProgress;
+		/// <summary>
+		/// Occurs when a file or a directory is extracted from an archive.
+		/// </summary>
+		public event EventHandler<FileProgressEventArgs> ExtractProgress;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Unzip" /> class.
@@ -194,10 +235,11 @@ namespace Internals
 				{
 					Extract(entry.Name, fileName);
 				}
-				
-				if (ExtractProgress != null)
+
+				var extractProgress = ExtractProgress;
+				if (extractProgress != null)
 				{
-					ExtractProgress(index + 1, Entries.Length);
+					extractProgress(this, new FileProgressEventArgs(index + 1, Entries.Length, entry.Name));
 				}
 			}
 		}

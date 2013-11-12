@@ -22,8 +22,11 @@ namespace Internals
 
 			using (var unzip = new Unzip(archiveName))
 			{
+				Console.WriteLine("Listing files in the archive:");
 				ListFiles(unzip);
 
+				Console.WriteLine("Extracting files from the archive:");
+				unzip.ExtractProgress += (s, e) => Console.WriteLine("{0} of {1}: {2}", e.CurrentFile, e.TotalFiles, e.FileName);
 				unzip.ExtractToDirectory(outputDirectory);
 			}
 		}
@@ -37,12 +40,13 @@ namespace Internals
 				if (entry.IsFile)
 				{
 					Console.WriteLine(tab + "{0}: {1} -> {2}", entry.Name, entry.CompressedSize, entry.OriginalSize);
+					continue;
 				}
-				else if (entry.IsDirectory)
-				{
-					Console.WriteLine(entry.Name);
-				}
+
+				Console.WriteLine(entry.Name);
 			}
+
+			Console.WriteLine();
 		}
 	}
 }
