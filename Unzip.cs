@@ -118,6 +118,8 @@ namespace Internals
 			0xb3667a2e, 0xc4614ab8, 0x5d681b02, 0x2a6f2b94, 0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d,
 		};
 
+		public event Action<int, int> ExtractProgress;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Unzip" /> class.
 		/// </summary>
@@ -166,8 +168,10 @@ namespace Internals
 		/// <param name="directoryName">Name of the directory.</param>
 		public void ExtractToDirectory(string directoryName)
 		{
-			foreach (var entry in Entries)
+			for (int index = 0; index < Entries.Length; index++)
 			{
+				var entry = Entries[index];
+
 				// create target directory for the file
 				var fileName = Path.Combine(directoryName, entry.Name);
 				var dirName = Path.GetDirectoryName(fileName);
@@ -177,6 +181,11 @@ namespace Internals
 				if (!entry.IsDirectory)
 				{
 					Extract(entry.Name, fileName);
+				}
+				
+				if (ExtractProgress != null)
+				{
+				    ExtractProgress(index + 1, Entries.Length);
 				}
 			}
 		}
@@ -307,7 +316,7 @@ namespace Internals
 		/// <summary>
 		/// Gets zip file entries.
 		/// </summary>
-		public IEnumerable<Entry> Entries
+		public Entry[] Entries
 		{
 			get
 			{
