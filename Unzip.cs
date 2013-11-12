@@ -218,7 +218,7 @@ namespace Internals
 		private Entry GetEntry(string fileName)
 		{
 			fileName = fileName.Replace("\\", "/").Trim().TrimStart('/');
-			var entry = Entries.Where(e => e.Name == fileName).FirstOrDefault();
+			var entry = Entries.FirstOrDefault(e => e.Name == fileName);
 
 			if (entry == null)
 			{

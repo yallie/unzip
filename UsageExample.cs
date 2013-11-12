@@ -30,18 +30,18 @@ namespace Internals
 
 		private static void ListFiles(Unzip unzip)
 		{
-			var tab = unzip.Entries.Where(e => e.IsDirectory).Any() ? "\t" : string.Empty;
+			var tab = unzip.Entries.Any(e => e.IsDirectory) ? "\t" : string.Empty;
 
 			foreach (var entry in unzip.Entries.OrderBy(e => e.Name))
 			{
 				if (entry.IsFile)
 				{
 					Console.WriteLine(tab + "{0}: {1} -> {2}", entry.Name, entry.CompressedSize, entry.OriginalSize);
-					continue;
 				}
-
-				// directory
-				Console.WriteLine(entry.Name);
+				else if (entry.IsDirectory)
+				{
+					Console.WriteLine(entry.Name);
+				}
 			}
 		}
 	}
