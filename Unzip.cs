@@ -112,29 +112,16 @@ namespace Internals
 				0xb3667a2e, 0xc4614ab8, 0x5d681b02, 0x2a6f2b94, 0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d,
 			};
 
-			// TODO: Could make this throw an exception if read before the FinalizeCalculation has been called, to avoid errors
-			// TODO: in the calling code.
-			public uint Crc32 { get; private set; }
+			private uint crcValue = 0xffffffff;
 
-			public Crc32Calculator()
-			{
-				Crc32 = 0xffffffff;
-			}
+			public uint Crc32 { get { return crcValue ^ 0xffffffff; } }
 
 			public void UpdateWithBlock(byte[] buffer, int numberOfBytes)
 			{
 				for (var i = 0; i < numberOfBytes; i++)
 				{
-					unchecked
-					{
-						Crc32 = (Crc32 >> 8) ^ Crc32Table[buffer[i] ^ Crc32 & 0xff];
-					}
+					crcValue = (crcValue >> 8) ^ Crc32Table[buffer[i] ^ crcValue & 0xff];
 				}
-			}
-
-			public void FinalizeCalculation()
-			{
-				Crc32 ^= 0xffffffff;
 			}
 		}
 
@@ -308,7 +295,6 @@ namespace Internals
 				count -= read;
 			}
 
-			crc32Calculator.FinalizeCalculation();
 			if (crc32Calculator.Crc32 != entry.Crc32)
 			{
 				throw new InvalidDataException(string.Format(
